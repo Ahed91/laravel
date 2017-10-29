@@ -32,6 +32,11 @@ class SchemaManager implements IteratorAggregate
     private $connection;
 
     /**
+     * @var string
+     */
+    private $command_schema = null;
+
+    /**
      * @var \Reliese\Meta\Schema[]
      */
     protected $schemas = [];
@@ -41,8 +46,9 @@ class SchemaManager implements IteratorAggregate
      *
      * @param \Illuminate\Database\ConnectionInterface $connection
      */
-    public function __construct(ConnectionInterface $connection)
+    public function __construct(ConnectionInterface $connection, $schema)
     {
+        $this->command_schema = $schema;
         $this->connection = $connection;
         $this->boot();
     }
@@ -56,10 +62,15 @@ class SchemaManager implements IteratorAggregate
             throw new RuntimeException("There is no Schema Mapper registered for [{$this->type()}] connection.");
         }
 
-        $schemas = forward_static_call([$this->getMapper(), 'schemas'], $this->connection);
+        if ($this->command_schema) {
+                $this->make($this->command_schema);
+        } else {
+            $schemas = forward_static_call([$this->getMapper(), 'schemas'], $this->connection);
 
-        foreach ($schemas as $schema) {
-            $this->make($schema);
+            foreach ($schemas as $schema) {
+                $this->make($schema);
+            }
+
         }
     }
 

@@ -66,7 +66,7 @@ class CodeModelsCommand extends Command
 
         // Otherwise map the whole database
         else {
-            $this->models->on($connection)->map($schema);
+            $this->models->on($connection, $schema)->map($schema);
             $this->info("Check out your models for $schema");
         }
     }
