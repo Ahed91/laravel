@@ -4,5 +4,39 @@ namespace {{namespace}};
 
 class {{class}} extends {{parent}}
 {
+    // required to start dataTable integration
+    public $dataTable = true;
+
+    // required to start alpaca integration
+    public $alpaca = true;
+
 {{body}}
+
+    public function scopeDataTable($query)
+    {
+        switch (REFERRER_ROUTE) {
+            default :
+                return $query;
+                break;
+        }
+    }
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+
+        // required to filter datatable
+        if (!defined('REFERRER_ROUTE')) {
+            return $array;
+        }
+
+        $config = [
+            'id' => $array['id'],
+            'actions' => ['show', 'edit', 'destroy'],
+            'model_name' => get_class_name($this)
+        ];
+        $array['controls'] = controlsHTML($config);
+
+        return $array;
+    }
 }
