@@ -32,7 +32,7 @@ class {{class}} extends {{parent}}
 
         $config = [
             'id' => $array['id'],
-            'actions' => ['show', 'edit', 'destroy'],
+            'actions' => ['edit', 'destroy'],
             'model_name' => get_class_name($this)
         ];
         $array['controls'] = controlsHTML($config);
